@@ -4,6 +4,8 @@ from sqlalchemy.orm import Session
 from database import get_db
 from schemas.user import UserCreate, UserLogin, UserResponse, TokenResponse
 from service.userservice import UserService
+from dependencies.auth import get_current_user
+from models.user import User
 
 router = APIRouter(
     prefix="/users",
@@ -32,3 +34,10 @@ def login(
     db: Session = Depends(get_db)
 ):
     return UserService.login_user(db, user)
+
+@router.get("/protected")
+async def protected_route(current_user : User=Depends(get_current_user)):
+    return {
+        "id": current_user.id,
+        "email": current_user.email
+    }
