@@ -18,9 +18,10 @@ class UserService:
             )
         
         db_user= User(
+            name=user.name,
             email=user.email,
             hashed_password=HashHelper.hash_password(user.password),
-            role=user.role
+            role=user.role,
         )
 
         db.add(db_user)
