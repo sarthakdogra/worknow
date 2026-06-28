@@ -47,28 +47,3 @@ async def protected_route(current_user : User=Depends(get_current_user)):
 
 
 
-@router.get("/customer")
-def customer_route(
-    current_user=Depends(required_role(UserRole.CUSTOMER))
-):
-    return {
-        "message": f"Welcome Customer {current_user.name}"
-    }
-
-
-@router.get("/worker")
-def worker_route(
-    current_user=Depends(required_role(UserRole.WORKER))
-):
-    return {
-        "message": f"Welcome Worker {current_user.name}"
-    }
-
-
-@router.get("/admin")
-def admin_route(
-    current_user=Depends(required_role(UserRole.ADMIN))
-):
-    return {
-        "message": f"Welcome Admin {current_user.name}"
-    }
