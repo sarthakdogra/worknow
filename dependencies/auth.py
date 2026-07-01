@@ -19,7 +19,7 @@ def get_current_user(
 
         payload = AuthHelper.verify_access_token(token)
 
-        user_id = payload.get("id")
+        user_id = payload.get("user_id")
 
         if user_id is None:
             raise HTTPException(status_code=401, detail="Invalid token")

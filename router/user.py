@@ -1,49 +1,50 @@
-from dependencies.roles import required_role
-from constants.roles import UserRole
-from fastapi import APIRouter, Depends
+from fastapi import APIRouter, Depends, status
 from sqlalchemy.orm import Session
 
 from database import get_db
-from schemas.user import UserCreate, UserLogin, UserResponse, TokenResponse
-from service.userservice import UserService
-from dependencies.auth import get_current_user
-from models.user import User
+from schemas.user import UserCreate, UserLogin
+from service.authservice import AuthService
 
 router = APIRouter(
-    prefix="/users",
-    tags=["Users"]
+    prefix="/auth",
+    tags=["Authentication"],
 )
 
 
 @router.post(
-    "/register",
-    response_model=UserResponse,
-    status_code=201
+    "/register/customer",
+    status_code=status.HTTP_201_CREATED,
 )
-def register(
+def register_customer(
     user: UserCreate,
-    db: Session = Depends(get_db)
+    db: Session = Depends(get_db),
 ):
-    return UserService.register_user(db, user)
+    return AuthService.register_customer(
+        db=db,
+        user_data=user,
+    )
 
 
 @router.post(
-    "/login",
-    response_model=TokenResponse
+    "/register/worker",
+    status_code=status.HTTP_201_CREATED,
 )
+def register_worker(
+    user: UserCreate,
+    db: Session = Depends(get_db),
+):
+    return AuthService.register_worker(
+        db=db,
+        user_data=user,
+    )
+
+
+@router.post("/login")
 def login(
     user: UserLogin,
-    db: Session = Depends(get_db)
+    db: Session = Depends(get_db),
 ):
-    return UserService.login_user(db, user)
-
-@router.get("/protected")
-async def protected_route(current_user : User=Depends(get_current_user)):
-    return {
-        "id": current_user.id,
-        "email": current_user.email,
-        "role": current_user.role
-    }
-
-
-
+    return AuthService.login(
+        db=db,
+        login_data=user,
+    )

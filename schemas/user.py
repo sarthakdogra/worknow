@@ -2,7 +2,6 @@ from pydantic import BaseModel , EmailStr
 
 class UserBase(BaseModel):
     email:EmailStr
-    role: str
     name: str
 
 class UserCreate(UserBase):
